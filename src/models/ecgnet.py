@@ -55,7 +55,8 @@ def train_model(model: nn.Module,
                 criterion: nn.Module,
                 epochs: int = 100,
                 early_stop_rounds: int = 10,
-                model_path: Optional[str] = None) -> nn.Module:
+                model_path: Optional[str] = None,
+                device: Optional[torch.device] = None) -> nn.Module:
     """
     Train the model
     Args:
@@ -70,8 +71,9 @@ def train_model(model: nn.Module,
     Returns:
         Trained model
     """
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model.to(device)
+    if device is None:
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model = model.to(device)
     best_model_wts = copy.deepcopy(model.state_dict())
     best_loss = float('inf')
     patience = 0
